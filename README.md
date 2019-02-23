@@ -15,7 +15,7 @@ You can just download the repo and open the Index.html in your browser.
 * I added additional functionality to support commas in larger amounts such as 1,000,000.00
 
 ## What I learned / am Learning
-* More JavaScript (new events, modules, the power of the IIFE)
+* More JavaScript (ES5) (new events, modules, the power of the IIFE)
 * Some HTML
 * Adding and removing DOM elements
 * Updating DOM element values
