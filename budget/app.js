@@ -35,7 +35,7 @@ var budgetController = (function () {
 
     //data to hold all expenses and income 
     //totals to hold expense and income totals
-    var data = {
+    let data = {
         allItems: {
             exp: [],
             inc: []
@@ -54,11 +54,9 @@ var budgetController = (function () {
      * @param {string} type 
      */
     var calculateTotal = function(type) {
-        var sum = 0;
+        let sum = 0;
 
-        data.allItems[type].forEach(function (item) {
-            sum += item.value;
-        });
+        data.allItems[type].forEach(item => sum += item.value );
 
         data.totals[type] = sum;
     }
@@ -71,7 +69,7 @@ var budgetController = (function () {
          * @param {number} val 
          */
         addItem: function(type, dec, val) {
-            var newItem, ID, allItems;
+            let newItem, ID;
 
             //get the last id and add one two it to always keep them moving forward
             //if the array is empty the first index is 0
@@ -99,15 +97,13 @@ var budgetController = (function () {
          * @param {number} id 
          */
         deleteItem: function(type, id) {
-            var ids, index;
-
             //create a new arr of just the ids
-            ids = data.allItems[type].map(function(current) {
-                return current.id;
+            const ids = data.allItems[type].map(cur => {
+                return cur.id;
             });
             
             //now get the index of that id
-            index = ids.indexOf(id);
+            const index = ids.indexOf(id);
 
             if(index !== -1) {
                 data.allItems[type].splice(index, 1);
@@ -140,16 +136,14 @@ var budgetController = (function () {
          * calculates the percentage of each expense
          */
         calculatePercentages: function() {
-            data.allItems.exp.forEach(function (item) {
-                item.calcPercentage(data.totals.inc);
-            });
+            data.allItems.exp.forEach(item => item.calcPercentage(data.totals.inc));
         },
 
         /**
          *  creates and returns an arr of expense percentages
          */
         getPercentages: function() {
-            var allPerc = data.allItems.exp.map(function(item) {
+            const allPerc = data.allItems.exp.map(item => {
                 return item.getPercentage();
             });
 
@@ -201,19 +195,8 @@ var UIController = (function() {
      * @param {number} n 
      */
     numberWithCommas = function(n) {
-        var parts=n.toString().split(".");
+        const parts=n.toString().split(".");
         return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (parts[1] ? "." + parts[1] : "");
-    };
-
-    /**
-     * this will loop a list of items to get the index an item
-     * @param {list<any>} list List<any> items to get loop through
-     * @param {function} callback callback to return the item and index
-     */
-    var nodeListForEach = function(list, callback) {
-        for(var i = 0; i < list.length; i++) {
-            callback(list[i], i);
-        };
     };
 
     /**
@@ -226,8 +209,6 @@ var UIController = (function() {
         num = num.toFixed(2);
 
         num = numberWithCommas(num);
-
-        type === 'exp' ? sign = '-' : sign = '+';
 
         return (type === 'exp' ? '-' : '+') + ' ' + num;
     };
@@ -251,7 +232,7 @@ var UIController = (function() {
         * @param {string} type 
         */
         addListItem: function(obj, type) {
-            var html, newHtml, element;
+            let html, newHtml, element;
             /*create HTML streing with placeholder text
             replace income-0 with inc-%id%. same with %vaue% and %description%
             
@@ -305,22 +286,9 @@ var UIController = (function() {
         *clear the input fields in the ui
         */
         clearFields: function () {
-            var fields;
+            const fields = document.querySelectorAll(DOMStrings.inputDescription + ', ' + DOMStrings.inputValue);
 
-            fields = document.querySelectorAll(DOMStrings.inputDescription + ', ' + DOMStrings.inputValue);
-
-            //tells slice to treat fields as an arr 
-            //instead of list to convert it to an array
-            //var fieldsArr = Array.prototype.slice.call(fields);
-
-            // fieldsArr.forEach(function(cur, index, arr) {
-            //     cur.value = "";
-            // });
-
-            //or just loop on the list
-            fields.forEach(element => {
-                element.value = "";
-            });
+            Array.from(fields).forEach(item => item.value = "");
 
             //this moves focus back to the description
             fields[0].focus();
@@ -332,11 +300,9 @@ var UIController = (function() {
          */
         displayPercentages: function(percentages) {
             //returns a Node list
-            var fields = document.querySelectorAll(DOMStrings.expensesPercentageLabel);
+            const fields = document.querySelectorAll(DOMStrings.expensesPercentageLabel);
 
-            nodeListForEach(fields, function(item, index) {
-                console.log(percentages[index]);
-
+            Array.from(fields).forEach((item, index) => {
                 if(percentages[index] !== -1) {
                     item.textContent = percentages[index] + '%';
                 } else {
@@ -350,8 +316,7 @@ var UIController = (function() {
          * @param {object : budget} dataObj 
          */
         displayBudget: function (dataObj) {
-            var type;
-            dataObj.budget > 0 ? type = 'inc' : type = 'exp';
+            const type = dataObj.budget > 0 ? 'inc' : 'exp';
 
             document.querySelector(DOMStrings.budgetLabel).textContent = formatNumber(dataObj.budget, type);
             document.querySelector(DOMStrings.incomeLabel).textContent = formatNumber( dataObj.totalInc, 'inc');
@@ -368,24 +333,20 @@ var UIController = (function() {
          * Display the month and year 
          */
         displayDate: function() {
-            var now, month, months;
-            months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-            now = new Date();
-            month = now.getMonth();
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const now = new Date();
+            const month = now.getMonth();
 
             document.querySelector(DOMStrings.dateLabel).textContent = months[month] + ' ' + now.getFullYear();
         },
 
         changedType: function() {
-            var fields = document.querySelectorAll(
+            const fields = document.querySelectorAll(
                 DOMStrings.inputType + ',' +
                 DOMStrings.inputDescription + ',' + 
                 DOMStrings.inputValue);
 
-            nodeListForEach(fields, function(cur) {
-                cur.classList.toggle('red-focus');
-            });
+            Array.from(fields).forEach(item => item.classList.toggle('red-focus'));
 
             document.querySelector(DOMStrings.inputBtn).classList.toggle('red');
         },
@@ -408,13 +369,13 @@ var controller = (function (budgetCtrl, UICtrl) {
      */
     var setupEventListeners = function () {
         //get the strings from the ui controller
-        var DOM = UICtrl.getDOMStrings();
+        const DOM = UICtrl.getDOMStrings();
 
         //on click to add another budget item.
         document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
 
         //this adds event to the global document
-        document.addEventListener('keypress', function (eventData) {
+        document.addEventListener('keypress', eventData => {
             //13 is return, which is for older browsers
             if (eventData.keyCode === 13 || eventData.which === 13)
             {
@@ -435,7 +396,7 @@ var controller = (function (budgetCtrl, UICtrl) {
         budgetCtrl.calculateBudget();
 
         //2. return new budget
-        var budget = budgetCtrl.getBudget();
+        const budget = budgetCtrl.getBudget();
 
         //3. update new budget UI
         UICtrl.displayBudget(budget);
@@ -446,7 +407,7 @@ var controller = (function (budgetCtrl, UICtrl) {
         budgetCtrl.calculatePercentages();
 
         //2. read them from the controller
-        var percentages = budgetCtrl.getPercentages();
+        const percentages = budgetCtrl.getPercentages();
 
         //3. update the UI
         UICtrl.displayPercentages(percentages);
@@ -456,17 +417,15 @@ var controller = (function (budgetCtrl, UICtrl) {
      * Adds a new item on keypress (return) or the check mark button
      */
     var ctrlAddItem = function () {
-        var input, newItem;
-
         //1. get data from page
-        input = UICtrl.getInput();
+        const input = UICtrl.getInput();
 
         //if we get back a bad input object
         if(input.decription === "" || isNaN(input.value) || input.value <= 0) 
             return;
 
         //2. add item to budget controller
-        newItem = budgetCtrl.addItem(input.type, input.decription, input.value);
+        const newItem = budgetCtrl.addItem(input.type, input.decription, input.value);
 
         //3. update UI
         UICtrl.addListItem(newItem, input.type);
@@ -486,17 +445,15 @@ var controller = (function (budgetCtrl, UICtrl) {
      * @param {event} event 
      */
     var ctrlDeleteItem = function(event) {
-        var itemID, splitId, type, ID;
-
         //we need to traverse upwards 4 parents based on the layout of the HMTL and get the id this
         //isnt good but the dom structure is hardcoded and added dynamically too so it works for this
-        itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+        const itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
 
         if(itemID) {
             //inc-x or exp-x
-            splitId = itemID.split('-');
-            type = splitId[0];
-            ID = parseInt(splitId[1]); //make sure its not a string
+            const splitId = itemID.split('-');
+            const type = splitId[0];
+            const ID = parseInt(splitId[1]); //make sure its not a string
 
             //1. delete the item from data
             budgetCtrl.deleteItem(type, ID);
