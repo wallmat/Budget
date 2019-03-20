@@ -5,6 +5,9 @@ Web page of a simple budget app. You can add to your income and expenses as well
 This will keep track of how much of your income your expenses take up. <br />
 As well as tell you how much budget is left for the month.
 
+## Try it out here!
+https://wallmat.github.io/Budget/
+
 ## Background
 As I continue to grow professionally, I am always trying to learn new things. This was a class project. 
 
